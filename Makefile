@@ -38,10 +38,14 @@ env_start_seed: db_run_seed web_dev
 # =============================
 # Web (Microservice) Container
 # =============================
-# TODO: Inject environment variables.
 web_dev:
 	docker run --name $(WEB_CONTAINER_NAME) \
 	-it --rm -v $(PWD):/src \
+	-e MYSQL_HOST=$(DB_HOST) \
+	-e MYSQL_PORT=$(DB_PORT) \
+	-e MYSQL_USER=$(DB_USER) \
+	-e MYSQL_PASSWORD=$(DB_PASSWORD) \
+	-e MYSQL_DATABASE=$(DB_DATABASE) \
 	-w /src \
 	-p $(WEB_HOST_PORT):$(WEB_CONTAINER_PORT) $(WEB_IMAGE) /bin/bash
 

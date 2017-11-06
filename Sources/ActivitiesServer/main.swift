@@ -14,11 +14,11 @@ HeliumLogger.use(.info)
 // Create connection string (use env variables, if exists)
 // TODO: Inject environment variables.
 let env = ProcessInfo.processInfo.environment
-var connectionString = MySQLConnectionString(host: "172.17.0.2")
-connectionString.port = 3306
-connectionString.user = "root"
-connectionString.password = "password"
-connectionString.database = "game_night"
+var connectionString = MySQLConnectionString(host: env["MYSQL_HOST"] ?? "172.17.0.2")
+connectionString.port = Int(env["MYSQL_PORT"] ?? "3306") ?? 3306
+connectionString.user = env["MYSQL_USER"] ?? "root"
+connectionString.password = env["MYSQL_PASSWORD"] ?? "password"
+connectionString.database = env["MYSQL_DATABASE"] ?? "game_night"
 
 // Create connection pool
 var pool = MySQLConnectionPool(connectionString: connectionString, poolSize: 10, defaultCharset: "utf8mb4")

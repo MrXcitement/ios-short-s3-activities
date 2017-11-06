@@ -28,9 +28,11 @@ public class ActivityMySQLDataAccessor: ActivityMySQLDataAccessorProtocol {
     // MARK: Queries
 
     public func createActivity(_ activity: Activity) throws -> Bool {
-        // TODO: Add implementation.
         // Execute insert query.
-        return false
+        let insertQuery = MySQLQueryBuilder()
+            .insert(data: activity.toMySQLRow(), table: "activities")
+        let result = try execute(builder: insertQuery)
+        return result.affectedRows > 0
     }
 
     public func updateActivity(_ activity: Activity) throws -> Bool {

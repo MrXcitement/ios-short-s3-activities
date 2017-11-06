@@ -59,9 +59,40 @@ public class Handlers {
     public func postActivity(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
         // TODO: Add implementation.
         // Check for request body.
+        guard let body = request.body, case let .json(json) = body else {
+            Log.error("Body contains invalid JSON")
+            try response.send(json: JSON(["message": "body is missing JSON or JSON is invalid"]))
+                        .status(.badRequest).end()
+            return
+        }
         // Validate request body has all activity parameters.
+        let newActivity = Activity(
+            id: nil,
+            name: json["name"].string,
+            emoji: json["emoji"].string,
+            description: json["description"].string,
+            genre: json["genre"].string,
+            minParticipants: json["min_participants"].int,
+            maxParticipants: json["max_participants"].int,
+            createdAt: nil, updatedAt: nil)
+        
+        let missingParameters = newActivity.validateParameters(
+            ["name", "emoji", "description", "genre", "minParticipants", "maxParticipants"])
+
+        guard missingParameters.count == 0 else {
+            Log.error("Unable to initialize parameters from request body: \(missingParameters).")
+            try response.send(json: JSON(["message": "Unable to initialize parameters from request body: \(missingParameters)."]))
+                        .status(.badRequest).end()
+            return
+        }
         // Use data accessor to insert activity.
-        // Return success/failure.
+        guard try dataAccessor.createActivity(newActivity) else {
+            try response.status(.notModified).end()
+            return
+        }
+        // Success
+        try response.send(json: JSON(["message": "Activity created."])).status(.created).end()
+
     }
 
     // MARK: PUT

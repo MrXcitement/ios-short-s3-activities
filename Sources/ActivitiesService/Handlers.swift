@@ -57,7 +57,6 @@ public class Handlers {
     // MARK: POST
 
     public func postActivity(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
-        // TODO: Add implementation.
         // Check for request body.
         guard let body = request.body, case let .json(json) = body else {
             Log.error("Body contains invalid JSON")

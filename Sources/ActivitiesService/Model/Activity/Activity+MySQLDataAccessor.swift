@@ -58,15 +58,26 @@ public class ActivityMySQLDataAccessor: ActivityMySQLDataAccessorProtocol {
     }
 
     public func getActivities(withID id: String) throws -> [Activity]? {
-        // TODO: Add implementation.
         // Execute select query (for specific id).
-        return nil
+        let fields = ["id", "name", "emoji", "description", "genre", "min_participants", "max_participants", "created_at", "updated_at"]
+        let select = MySQLQueryBuilder()
+                        .select(fields: fields, table: "activities")
+                        .wheres(statement:"Id=?", parameters: id)
+
+        let result = try execute(builder: select)
+        let activities = result.toActivities()
+        return (activities.count == 0) ? nil : activities
     }
 
     public func getActivities() throws -> [Activity]? {
-        // TODO: Add implementation.
         // Execute select query (get all activities).
-        return nil
+        let fields = ["id", "name", "emoji", "description", "genre", "min_participants", "max_participants", "created_at", "updated_at"]
+        let select = MySQLQueryBuilder()
+                        .select(fields: fields, table: "activities")
+
+        let result = try execute(builder: select)
+        let activities = result.toActivities()
+        return (activities.count == 0) ? nil : activities
     }
 
     // MARK: Utility

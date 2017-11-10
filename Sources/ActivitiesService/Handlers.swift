@@ -48,10 +48,25 @@ public class Handlers {
     }
 
     public func getActivities(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
-        // TODO: Add implementation.
         // Check for id (if exists).
-        // Use data accessor to get activities.
+        let id = request.parameters["id"]
+        var activities: [Activity]?
+
+        // Use data accessor to get activities (by id if provided)
+        if let id = id {
+            activities = try dataAccessor.getActivities(withID: id)
+        } else {
+            activities = try dataAccessor.getActivities()
+        }
+
+        // If no activities were found
+        if activities == nil {
+            // Return error status notFound
+            try response.status(.notFound).end()
+            return
+        }
         // Return activities.
+        try response.send(json: activities!.toJSON()).status(.OK).end()
     }
 
     // MARK: POST

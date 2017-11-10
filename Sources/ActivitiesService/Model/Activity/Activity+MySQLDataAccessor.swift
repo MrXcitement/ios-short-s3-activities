@@ -36,9 +36,12 @@ public class ActivityMySQLDataAccessor: ActivityMySQLDataAccessorProtocol {
     }
 
     public func updateActivity(_ activity: Activity) throws -> Bool {
-        // TODO: Add implementation.
         // Execute update query (for specific id).
-        return false
+        let updateQuery = MySQLQueryBuilder()
+            .update(data: activity.toMySQLRow(), table: "activities")
+            .wheres(statement: "Id=?", parameters: "\(activity.id!)")
+        let result = try execute(builder: updateQuery)
+        return result.affectedRows > 0
     }
 
     public func deleteActivity(withID id: String) throws -> Bool {

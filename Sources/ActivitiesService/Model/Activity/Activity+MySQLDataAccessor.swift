@@ -45,9 +45,12 @@ public class ActivityMySQLDataAccessor: ActivityMySQLDataAccessorProtocol {
     }
 
     public func deleteActivity(withID id: String) throws -> Bool {
-        // TODO: Add implementation.
         // Execute delete query (for specific id).
-        return false
+        let deleteQuery = MySQLQueryBuilder()
+            .delete(fromTable: "activities")
+            .wheres(statement: "Id=?", parameters: "\(id)")
+        let result = try execute(builder: deleteQuery)
+        return result.affectedRows > 0 
     }
 
     public func getExample(withID id: String) throws -> [Activity]? {

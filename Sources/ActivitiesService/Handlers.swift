@@ -158,9 +158,19 @@ public class Handlers {
     // MARK: DELETE
 
     public func deleteActivity(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws {
-        // TODO: Add implementation.
         // Check for id.
+        guard let id = request.parameters["id"] else {
+            Log.error("id (path parameter) missing")
+            try response.send(json: JSON(["message": "id (path parameter) missing"]))
+                        .status(.badRequest).end()
+            return
+        }
         // Use data accessor to delete activity.
-        // Return success/failure.
+        guard try dataAccessor.deleteActivity(withID: id) else {
+            try response.status(.notModified).end()
+            return
+        }
+        // Return success
+        try response.send(json: JSON(["message": "Activity deleted."])).status(.noContent).end()
     }
 }
